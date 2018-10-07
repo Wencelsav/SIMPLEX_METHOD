@@ -3,80 +3,80 @@
 
 using namespace std;
 
-	vector<vector<double>> matrix_a = { { 2,1,2 },{ 1,2,0 },{ 0,0.5,1 } };
-	vector<double> matrix_b = { 6,6,2 };
-	vector<double> matrix_c = { 2,5,3 };
+vector<vector<double>> matrix_a = { { 2,1,2 },{ 1,2,0 },{ 0,0.5,1 } };
+vector<double> matrix_b = { 6,6,2 };
+vector<double> matrix_c = { 2,5,3 };
 
 
 
-	void print(double ** &simplex) {
-		for (unsigned int j = 0; j <= matrix_c.size() + 1; ++j) {
-			for (unsigned int i = 0; i <= matrix_b.size() + 1; ++i) {
-				cout << simplex[j][i] << "	";
-			}
-			cout << endl;
+void Print(double ** &simplex) {
+	for (unsigned int j = 0; j <= matrix_c.size() + 1; ++j) {
+		for (unsigned int i = 0; i <= matrix_b.size() + 1; ++i) {
+			cout << simplex[j][i] << "	";
 		}
 		cout << endl;
 	}
+	cout << endl;
+}
 
-	void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k) {
-		//changing all exept r and k
-		for (unsigned int i = 1; i <= matrix_c.size() + 1; ++i) {
-			if (i != r) {
-				for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
-					if (j != k) {
-						simplex[i][j] = simplex[i][j] - (simplex[i][k] * simplex[r][j]) / simplex[r][k];
-					}
+void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k) {
+	//changing all exept r and k
+	for (unsigned int i = 1; i <= matrix_c.size() + 1; ++i) {
+		if (i != r) {				
+			for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
+				if (j != k) {
+					simplex[i][j] = simplex[i][j] - (simplex[i][k] * simplex[r][j]) / simplex[r][k];
 				}
 			}
 		}
-		//changing r and k
-		for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
-			if (j != k) {
-				simplex[r][j] = simplex[r][j] / simplex[r][k];
-			}
-		}
-		for (unsigned int i = 1; i <= matrix_b.size() + 1; ++i) {
-			if (i != r) {
-				simplex[i][k] = -simplex[i][k] / simplex[r][k];
-			}
-		}
-		//changing rk
-		simplex[r][k] = 1 / simplex[r][k];
-		//change vars
-		swap(simplex[0][k], simplex[r][0]);;
 	}
+	//changing r and k
+	for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
+		if (j != k) {
+			simplex[r][j] = simplex[r][j] / simplex[r][k];
+		}
+	}
+	for (unsigned int i = 1; i <= matrix_b.size() + 1; ++i) {
+		if (i != r) {
+			simplex[i][k] = -simplex[i][k] / simplex[r][k];
+		}
+	}
+	//changing rk
+	simplex[r][k] = 1 / simplex[r][k];
+	//change vars
+	swap(simplex[0][k], simplex[r][0]);;
+}
 
-	void create_simplex( double ** &simplex_matrix) {
-		//filling with 0s
-		for (unsigned int i = 0; i <= matrix_c.size() + 1; ++i) {
-			for (unsigned int j = 0; j <= matrix_b.size() + 1; ++j) {
-				simplex_matrix[j][i] = 0;
-			}
+void Create_simplex( double ** &simplex_matrix) {
+	//filling with 0s
+	for (unsigned int i = 0; i <= matrix_c.size() + 1; ++i) {
+		for (unsigned int j = 0; j <= matrix_b.size() + 1; ++j) {
+			simplex_matrix[j][i] = 0;
 		}
-		//filing hat
-		for (unsigned int i = 1; i <= matrix_a[0].size() + 1; ++i) {
-			simplex_matrix[0][i] = i - 1;
-		}
-		for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
-			simplex_matrix[j][0] = matrix_c.size() + j;
-		}
-		//filling B
-		for (unsigned int i = 0; i < matrix_b.size(); ++i) {
-			simplex_matrix[i + 1][1] = matrix_b[i];
-		}
-		//filling C
-		for (unsigned int i = 1; i <= matrix_c.size(); ++i) {
-			simplex_matrix[matrix_b.size() + 1][i + 1] = matrix_c[i - 1];
-		}
-		//Filling A
-		for (unsigned int i = 0; i < matrix_c.size(); ++i) {
-			for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
-				simplex_matrix[i + 1][j + 1] = matrix_a[i][j - 1];
-			}
-		}
-		//finished
 	}
+	//filing hat
+	for (unsigned int i = 1; i <= matrix_a[0].size() + 1; ++i) {
+		simplex_matrix[0][i] = i - 1;
+	}
+	for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
+		simplex_matrix[j][0] = matrix_c.size() + j;
+	}
+	//filling B
+	for (unsigned int i = 0; i < matrix_b.size(); ++i) {
+		simplex_matrix[i + 1][1] = matrix_b[i];
+	}
+	//filling C
+	for (unsigned int i = 1; i <= matrix_c.size(); ++i) {
+		simplex_matrix[matrix_b.size() + 1][i + 1] = matrix_c[i - 1];
+	}
+	//Filling A
+	for (unsigned int i = 0; i < matrix_c.size(); ++i) {
+		for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
+			simplex_matrix[i + 1][j + 1] = matrix_a[i][j - 1];
+		}
+	}
+	//finished
+}
 
 
 int main()
@@ -89,14 +89,14 @@ int main()
 
 		simplex_matrix[i] = new double [matrix_c.size()+1];;
 	}
-	create_simplex(simplex_matrix);
-	print(simplex_matrix);
+	Create_simplex(simplex_matrix);
+	Print(simplex_matrix);
 	JordanExeptions(simplex_matrix, 1, 2);
-	print(simplex_matrix);
+	Print(simplex_matrix);
 	JordanExeptions(simplex_matrix, 2, 3);
-	print(simplex_matrix);
+	Print(simplex_matrix);
 	JordanExeptions(simplex_matrix, 3, 4);
-	print(simplex_matrix);
+	Print(simplex_matrix);
 
 	std::cin.get();
 
