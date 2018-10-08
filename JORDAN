@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ vector<double> matrix_c = { 2,5,3 };
 void print(double ** &simplex) {
     for (unsigned int j = 0; j <= matrix_c.size() + 1; ++j) {
         for (unsigned int i = 0; i <= matrix_b.size() + 1; ++i) {
-            cout << simplex[j][i] << "	";
+            cout << setw(10) /*<< setprecision(3)*/ << simplex[j][i] << "      ";
         }
         cout << endl;
     }
@@ -124,16 +125,17 @@ int main()
         simplex_matrix[i] = new double[matrix_c.size() + 1];
     }
     create_simplex(simplex_matrix);
-    cout << "Т.к. опорное решение найдено, то начинаем второй этап с данной симплекс-таблицей: " << endl;
+    cout << "После составления симплекс таблицы смотрим на столбец с до F, так как там все положительно, то опорное решение 0, 0, 0" << endl <<"Т.к. опорное решение найдено, то начинаем второй этап с данной симплекс-таблицей: " << endl;
     print(simplex_matrix);
     JordanExeptions(simplex_matrix, 1, 2);
-    cout << "После 1 операции Жордановых исключений: " << endl;
+    cout << "Разрешающий столбец - 2, разрешающая строка - 1. После 1 операции Жордановых исключений: " << endl;
     print(simplex_matrix);
     JordanExeptions(simplex_matrix, 2, 3);
-    cout << "После 2 операции Жордановых исключений: " << endl;
+    cout << "Разрешающий столбец - 3, разрешающая строка - 2. После 2 операции Жордановых исключений: " << endl;
     print(simplex_matrix);
     JordanExeptions(simplex_matrix, 3, 4);
-    cout << "Финальный этап, не забываем, что ищем максимум, значит меняем знак: " << endl;
+    cout << "Разрешающий столбец - 4, разрешающая строка - 3.Финальный этап, не забываем, что ищем максимум, значит меняем знак: " << endl;
+    print(simplex_matrix);
     simplex_matrix[matrix_b.size() + 1][1] = -simplex_matrix[matrix_b.size() + 1][1];
     print(simplex_matrix);
     for (unsigned int i = 0; i < matrix_b.size() + 1; ++i) {
