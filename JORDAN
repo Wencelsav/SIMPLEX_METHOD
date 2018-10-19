@@ -16,138 +16,143 @@ vector<double> matrix_c = { 2,5,3 };
 
 // Метод для вывода симплекс-таблицы
 void print(double ** &simplex) {
-    for (unsigned int j = 0; j <= matrix_c.size() + 1; ++j) {
-        for (unsigned int i = 0; i <= matrix_b.size() + 1; ++i) {
-            cout << setw(10) << simplex[j][i] << "      ";
-        }
-        cout << endl;
-    }
-    cout << endl;
+	cout << setw(11) << " " << "      ";
+	cout << setw(10) << "C"  << "      ";
+	for(unsigned int i = 2; i <= matrix_c.size() + 1; ++i) {
+		cout << setw(9) << "x" << simplex[0][i] << "      ";
+	}
+	cout << endl;
+	for (unsigned int j = 1; j <= matrix_c.size() + 1; ++j) {
+		if (j == matrix_c.size() + 1) cout << setw(11) << "F"  << "      ";
+		else cout << setw(10) << "x" << simplex[j][0] << "      ";
+		for (unsigned int i = 1; i <= matrix_c.size() + 1; ++i) {
+			cout << setw(10) << simplex[j][i] << "      ";
+		}
+		cout << endl;
+	}
+	cout << endl;
 }
 
 // Метод, реализующий жордановы исключения
 void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k) {
-    //changing all exept r and k
-    for (unsigned int i = 1; i <= matrix_c.size() + 1; ++i) {
-        if (i != r) {
-            for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
-                if (j != k) {
-                    simplex[i][j] = simplex[i][j] - (simplex[i][k] * simplex[r][j]) / simplex[r][k];
-                }
-            }
-        }
-    }
-    //changing r and k
-    for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
-        if (j != k) {
-            simplex[r][j] = simplex[r][j] / simplex[r][k];
-        }
-    }
-    for (unsigned int i = 1; i <= matrix_b.size() + 1; ++i) {
-        if (i != r) {
-            simplex[i][k] = -simplex[i][k] / simplex[r][k];
-        }
-    }
-    //changing rk
-    simplex[r][k] = 1 / simplex[r][k];
-    //change vars
-    swap(simplex[0][k], simplex[r][0]);;
+	//changing all exept r and k
+	for (unsigned int i = 1; i <= matrix_c.size() + 1; ++i) {
+		if (i != r) {
+			for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
+				if (j != k) {
+					simplex[i][j] = simplex[i][j] - (simplex[i][k] * simplex[r][j]) / simplex[r][k];
+				}
+			}
+		}
+	}
+	//changing r and k
+	for (unsigned int j = 1; j <= matrix_b.size() + 1; ++j) {
+		if (j != k) {
+			simplex[r][j] = simplex[r][j] / simplex[r][k];
+		}
+	}
+	for (unsigned int i = 1; i <= matrix_b.size() + 1; ++i) {
+		if (i != r) {
+			simplex[i][k] = -simplex[i][k] / simplex[r][k];
+		}
+	}
+	//changing rk
+	simplex[r][k] = 1 / simplex[r][k];
+	//change vars
+	swap(simplex[0][k], simplex[r][0]);;
 }
 
 // Метод создания симплекс-таблицы из исходных данных
-void create_simplex( double ** &simplex_matrix) {
-    //filling with 0s
-    for (unsigned int i = 0; i <= matrix_c.size() + 1; ++i) {
-        for (unsigned int j = 0; j <= matrix_b.size() + 1; ++j) {
-            simplex_matrix[j][i] = 0;
-        }
-    }
-    //filing hat
-    for (unsigned int i = 1; i <= matrix_a[0].size() + 1; ++i) {
-        simplex_matrix[0][i] = i - 1;
-    }
-    for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
-        simplex_matrix[j][0] = matrix_c.size() + j;
-    }
-    //filling B
-    for (unsigned int i = 0; i < matrix_b.size(); ++i) {
-        simplex_matrix[i + 1][1] = matrix_b[i];
-    }
-    //filling C
-    for (unsigned int i = 1; i <= matrix_c.size(); ++i) {
-        simplex_matrix[matrix_b.size() + 1][i + 1] = matrix_c[i - 1];
-    }
-    //Filling A
-    for (unsigned int i = 0; i < matrix_c.size(); ++i) {
-        for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
-            simplex_matrix[i + 1][j + 1] = matrix_a[i][j - 1];
-        }
-    }
+void create_simplex(double ** &simplex_matrix) {
+	//filling with 0s
+	for (unsigned int i = 0; i <= matrix_c.size() + 1; ++i) {
+		for (unsigned int j = 0; j <= matrix_b.size() + 1; ++j) {
+			simplex_matrix[j][i] = 0;
+		}
+	}
+	//filing hat
+	for (unsigned int i = 1; i <= matrix_a[0].size() + 1; ++i) {
+		simplex_matrix[0][i] = i - 1;
+	}
+	for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
+		simplex_matrix[j][0] = matrix_c.size() + j;
+	}
+	//filling B
+	for (unsigned int i = 0; i < matrix_b.size(); ++i) {
+		simplex_matrix[i + 1][1] = matrix_b[i];
+	}
+	//filling C
+	for (unsigned int i = 1; i <= matrix_c.size(); ++i) {
+		simplex_matrix[matrix_b.size() + 1][i + 1] = matrix_c[i - 1];
+	}
+	//Filling A
+	for (unsigned int i = 0; i < matrix_c.size(); ++i) {
+		for (unsigned int j = 1; j <= matrix_b.size(); ++j) {
+			simplex_matrix[i + 1][j + 1] = matrix_a[i][j - 1];
+		}
+	}
 }
 
-// Метод считывания из файла, не используется, но может быть использован в main, на вход подается строка пути к файлу 
-//IF NESSESARY
-/*
-void Read_from_file(string directory) {
-    ifstream file(directory);
-    if (file.is_open()) {
-        double number;
-        //reading C
-        string matrix_C;
-        getline(file, matrix_C);
-        istringstream C(matrix_C);
-        while (C >> number) {
-            matrix_c.push_back(number);
-        }
-        //reading B
-        string matrix_B;
-        getline(file, matrix_B);
-        istringstream B(matrix_B);
-        while (B >> number) {
-            matrix_b.push_back(number);
-        }
-        // reading A
-        for (unsigned int i = 0; i < matrix_b.size(); ++i) {
-            string matrix_A;
-            getline(file, matrix_A);
-            istringstream A(matrix_A);
-            while (A >> number) {
-                matrix_a[i].push_back(number);
-            }
-        }
-    }
+bool checking_s(double ** &simplex_matrix) {
+	for (unsigned i = 1; i < matrix_b.size(); ++i) {
+		if (simplex_matrix[i][1] < 0) {
+			cout << "I found a -" << endl;
+			return true;
+		}
+	}
+	return false;
 }
-*/
+
+void first_stage(double ** &simplex_matrix) {
+	while (checking_s(simplex_matrix)) {
+		cout << "start 1 stage" << endl;
+		for (unsigned i = 1; i <= matrix_b.size(); ++i) {
+			if (simplex_matrix[i][1] < 0) {
+				for (unsigned j = 2; j <= matrix_c.size() + 1; ++j) {
+					if (simplex_matrix[i][j] < 0) {
+						cout << "start 1 stage Jordan" << endl;
+						JordanExeptions(simplex_matrix, i, j);
+						print(simplex_matrix);
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+bool checking_F(double ** &simplex_matrix) {
+	for (unsigned i = 1; i << matrix_b.size(); ++i) {
+		if (simplex_matrix[i][1] < 0) {
+			return true;
+			break;
+		}
+	}
+	return false;
+}
+
 
 
 int main()
 {
-    //создаем матрицу
-    double ** simplex_matrix;
-    simplex_matrix = new double *[matrix_b.size() + 1];
-    for (unsigned int i = 0; i <= matrix_b.size() + 1; ++i) {
-        simplex_matrix[i] = new double[matrix_c.size() + 1];
-    }
-    create_simplex(simplex_matrix);
-    cout << "После составления симплекс таблицы смотрим на столбец с до F, так как там все положительно, то опорное решение 0, 0, 0" << endl <<"Т.к. опорное решение найдено, то начинаем второй этап с данной симплекс-таблицей: " << endl;
-    print(simplex_matrix);
-    JordanExeptions(simplex_matrix, 1, 2);
-    cout << "Разрешающий столбец - 2, разрешающая строка - 1. После 1 операции Жордановых исключений: " << endl;
-    print(simplex_matrix);
-    JordanExeptions(simplex_matrix, 2, 3);
-    cout << "Разрешающий столбец - 3, разрешающая строка - 2. После 2 операции Жордановых исключений: " << endl;
-    print(simplex_matrix);
-    JordanExeptions(simplex_matrix, 3, 4);
-    cout << "Разрешающий столбец - 4, разрешающая строка - 3.Финальный этап, не забываем, что ищем максимум, значит меняем знак: " << endl;
-    print(simplex_matrix);
-    cout << "Со сменой знака: " << endl;
-    simplex_matrix[matrix_b.size() + 1][1] = -simplex_matrix[matrix_b.size() + 1][1];
-    print(simplex_matrix);
-    //удаление матрицы, так как мы выделяли память под нее
-    for (unsigned int i = 0; i < matrix_b.size() + 1; ++i) {
-        delete[] simplex_matrix[i];
-    }
-    delete[]simplex_matrix;
-    std::cin.get();
-}
+	//создаем матрицу
+	double ** simplex_matrix;
+	simplex_matrix = new double *[matrix_b.size() + 1];
+	for (unsigned int i = 0; i <= matrix_b.size() + 1; ++i) {
+		simplex_matrix[i] = new double[matrix_c.size() + 1];
+	}
+	create_simplex(simplex_matrix);
+	print(simplex_matrix);
+	first_stage(simplex_matrix);
 
+	print(simplex_matrix);
+	
+
+
+	//удаление матрицы, так как мы выделяли память под нее
+	for (unsigned int i = 0; i < matrix_b.size() + 1; ++i) {
+		delete[] simplex_matrix[i];
+	}
+	delete[]simplex_matrix;
+	std::cin.get();
+}
