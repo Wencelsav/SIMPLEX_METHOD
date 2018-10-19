@@ -9,10 +9,14 @@
 using namespace std;
 
 // Условие задачи
-
+/*
 vector<vector<double>> matrix_a = { { 2,1,0 },{ 1,2,0.5 }, {2,0,1 } };
 vector<double> matrix_b = {  2,5,3 };
 vector<double> matrix_c = { 6,6,2 };
+*/
+vector<vector<double>> matrix_a = { { 2,1,2 },{ 1,2,0 },{ 0,0.5,1 } };
+vector<double> matrix_b = { 6,6,2 };
+vector<double> matrix_c = { 2,5,3 };
 
 /*
 vector<vector<double>> matrix_a = { { 3,-2 },{ 1,-4 },{ -4,-1 },{ -1,1 } };
