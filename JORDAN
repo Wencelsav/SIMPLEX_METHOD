@@ -14,9 +14,6 @@ vector<vector<double>> matrix_a = { { 2,1,0 },{ 1,2,0.5 }, {2,0,1 } };
 vector<double> matrix_b = {  2,5,3 };
 vector<double> matrix_c = { 6,6,2 };
 */
-vector<vector<double>> matrix_a = { { 2,1,2 },{ 1,2,0 },{ 0,0.5,1 } };
-vector<double> matrix_b = { 6,6,2 };
-vector<double> matrix_c = { 2,5,3 };
 
 /*
 vector<vector<double>> matrix_a = { { 3,-2 },{ 1,-4 },{ -4,-1 },{ -1,1 } };
@@ -25,7 +22,7 @@ vector<double> matrix_c = { -3,-3 };
 */
 
 // Метод для вывода симплекс-таблицы
-void print(double ** &simplex) {
+void print(double ** simplex, vector<double> matrix_c, vector<double> matrix_b) {
 	cout << setw(11) << " " << "      ";
 	cout << setw(10) << "C"  << "      ";
 	for(unsigned int i = 2; i <= matrix_c.size() + 1; ++i) {
@@ -44,7 +41,7 @@ void print(double ** &simplex) {
 }
 
 // Метод, реализующий жордановы исключения
-void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k) {
+void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k, vector<double> matrix_c, vector<double> matrix_b) {
 	//changing all exept r and k
 	for (unsigned int i = 1; i <= matrix_b.size() + 1; ++i) {
 		if (i != r) {
@@ -73,7 +70,7 @@ void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k) {
 }
 
 // Метод создания симплекс-таблицы из исходных данных
-void create_simplex(double ** &simplex_matrix) {
+void create_simplex(double ** &simplex_matrix, vector<double> matrix_c, vector<double> matrix_b, vector<vector<double>> matrix_a) {
 	//filling with 0s
 	for (unsigned int i = 0; i <= matrix_c.size() + 1; ++i) {
 		for (unsigned int j = 0; j <= matrix_b.size() + 1; ++j) {
@@ -103,8 +100,8 @@ void create_simplex(double ** &simplex_matrix) {
 	}
 }
 
-bool checking_s(double ** &simplex_matrix) {
-	for (unsigned i = 1; i < matrix_b.size(); ++i) {
+bool checking_b(double ** simplex_matrix, vector<double> matrix_b) {
+	for (unsigned i = 1; i <= matrix_b.size(); ++i) {
 		if (simplex_matrix[i][1] < 0) {
 			return true;
 		}
@@ -112,8 +109,8 @@ bool checking_s(double ** &simplex_matrix) {
 	return false;
 }
 
-void first_stage(double ** simplex_matrix) {
-	while (checking_s(simplex_matrix)) {
+void first_stage(double ** &simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
+	while (checking_b(simplex_matrix, matrix_b)) {
 		cout << "start 1 stage" << endl;
 		for (unsigned i = 1; i <= matrix_b.size(); ++i) {
 			if (simplex_matrix[i][1] < 0) {
@@ -143,14 +140,14 @@ void first_stage(double ** simplex_matrix) {
 				}
 				cout << "min = " << min << endl;
 				cout << "start 1 stage Jordan with " << min_i << "," << j_ << endl;
-						JordanExeptions(simplex_matrix, min_i, j_);
-						print(simplex_matrix);
+						JordanExeptions(simplex_matrix, min_i, j_, matrix_c, matrix_b);
+						print(simplex_matrix, matrix_c, matrix_b);
 			}
 		}
 	}
 }
 
-bool checking_F(double ** simplex_matrix) {
+bool checking_F(double ** simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
 	for (unsigned i = 2; i <= matrix_c.size() + 1; ++i) {
 		if (simplex_matrix[matrix_b.size()+1][i] > 0) {
 			return true;
@@ -160,8 +157,8 @@ bool checking_F(double ** simplex_matrix) {
 	return false;
 }
 
-void second_stage(double ** &simplex_matrix) {
-	while (checking_F(simplex_matrix)) {
+void second_stage(double ** &simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
+	while (checking_F(simplex_matrix, matrix_c, matrix_b)) {
 		for (unsigned i = 2; i <= matrix_c.size() + 1; ++i) {
 			if (simplex_matrix[matrix_b.size() + 1][i] > 0) {
 				double min = 0;
@@ -180,8 +177,8 @@ void second_stage(double ** &simplex_matrix) {
 					}
 				}
 				cout << "start 2 stage Jordan with " << min_j << "," << i << endl;
-				JordanExeptions(simplex_matrix, min_j, i);
-				print(simplex_matrix);
+				JordanExeptions(simplex_matrix, min_j, i, matrix_c, matrix_b);
+				print(simplex_matrix, matrix_c, matrix_b);
 			}
 		}
 	}
@@ -190,17 +187,79 @@ void second_stage(double ** &simplex_matrix) {
 int main()
 {
 	//создаем матрицу
+	vector<vector<double>> matrix_a = { { 2,1,2 },{ 1,2,0 },{ 0,0.5,1 } };
+	vector<double> matrix_b = { 6,6,2 };
+	vector<double> matrix_c = { 2,5,3 };
+
 	double ** simplex_matrix;
 	simplex_matrix = new double *[matrix_b.size() + 1];
 	for (unsigned int i = 0; i <= matrix_b.size() + 1; ++i) {
 		simplex_matrix[i] = new double[matrix_c.size() + 1];
 	}
-	create_simplex(simplex_matrix);
-	print(simplex_matrix);
-	first_stage(simplex_matrix);
-	second_stage(simplex_matrix);
+	create_simplex(simplex_matrix, matrix_c, matrix_b, matrix_a);
+
+	print(simplex_matrix, matrix_c, matrix_b);
+	first_stage(simplex_matrix, matrix_c, matrix_b);
+	second_stage(simplex_matrix, matrix_c, matrix_b);
 	//print(simplex_matrix);
+
+	//Для ЦП
+	double ** simplex_matrix1 = new double *[matrix_b.size() + 2];
+	for (unsigned int i = 0; i <= matrix_b.size() + 2; ++i) {
+		simplex_matrix1[i] = new double[matrix_c.size() + 1];
+	}
+
+	cout << "MMB1 x2 <= 2" << endl;
+	// ВЕТВИМ ПО Х2, КОГДА 2.5 <= 2
+	vector<double> matrix_b1 = { 1,1,1,1 };
+
+	for (unsigned int i = 0; i <= matrix_b.size(); ++i) {
+		for (unsigned int j = 0; j <= matrix_c.size()+1; ++j) {
+			simplex_matrix1[i][j] = simplex_matrix[i][j];
+		}
+	}
+	simplex_matrix1[matrix_b.size() + 1][0] = 7;
+	simplex_matrix1[matrix_b.size() + 1][1] = -0.5;
+	simplex_matrix1[matrix_b.size() + 1][2] = 0.25;
+	simplex_matrix1[matrix_b.size() + 1][3] = -0.5;
+	simplex_matrix1[matrix_b.size() + 1][4] = -0.5;
+	for (unsigned int j = 0; j <= matrix_c.size() + 1; ++j) {
+		simplex_matrix1[matrix_b.size()+2][j] = simplex_matrix[matrix_b.size()+1][j];
+	}
+	print(simplex_matrix1, matrix_c, matrix_b1);
 	
+	double ** simplex_matrix2 = new double *[matrix_b.size() + 2];
+	for (unsigned int i = 0; i <= matrix_b.size() + 2; ++i) {
+		simplex_matrix2[i] = new double[matrix_c.size() + 1];
+	}
+
+	for (unsigned int j = 0; j <= matrix_b.size() + 2; ++j) {
+		for (unsigned int i = 0; i <= matrix_c.size() + 1; ++i) {
+			simplex_matrix2[j][i] = simplex_matrix1[j][i];
+		}
+	}
+
+	first_stage(simplex_matrix1, matrix_c, matrix_b1);
+	second_stage(simplex_matrix1, matrix_c, matrix_b1);
+
+
+	//ВЕТВИМ ПО Х2, КОГДА 2.5 <= 2
+	cout << "MMB2 x2 >= 2" << endl;
+	
+	for (int j = 2; j <= matrix_c.size() + 1; ++j) {
+		simplex_matrix2[4][j] = -simplex_matrix2[4][j];
+	}
+	print(simplex_matrix2, matrix_c, matrix_b1);
+	JordanExeptions(simplex_matrix2, 4, 2, matrix_c, matrix_b1);
+	print(simplex_matrix2, matrix_c, matrix_b1);
+	//first_stage(simplex_matrix2, matrix_c, matrix_b1);
+	//second_stage(simplex_matrix2, matrix_c, matrix_b1);
+	
+	JordanExeptions(simplex_matrix2, 4, 2, matrix_c, matrix_b1);
+
+
+
+
 
 
 	//удаление матрицы, так как мы выделяли память под нее
@@ -210,4 +269,3 @@ int main()
 	delete[]simplex_matrix;
 	std::cin.get();
 }
-
