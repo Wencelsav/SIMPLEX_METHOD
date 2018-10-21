@@ -8,18 +8,7 @@
 
 using namespace std;
 
-// Условие задачи
-/*
-vector<vector<double>> matrix_a = { { 2,1,0 },{ 1,2,0.5 }, {2,0,1 } };
-vector<double> matrix_b = {  2,5,3 };
-vector<double> matrix_c = { 6,6,2 };
-*/
 
-/*
-vector<vector<double>> matrix_a = { { 3,-2 },{ 1,-4 },{ -4,-1 },{ -1,1 } };
-vector<double> matrix_b = { -4,-18,-30,-5 };
-vector<double> matrix_c = { -3,-3 };
-*/
 
 // Метод для вывода симплекс-таблицы
 void print(double ** simplex, vector<double> matrix_c, vector<double> matrix_b) {
@@ -39,6 +28,7 @@ void print(double ** simplex, vector<double> matrix_c, vector<double> matrix_b) 
 	}
 	std::cout << endl;
 }
+
 
 // Метод, реализующий жордановы исключения
 void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k, vector<double> matrix_c, vector<double> matrix_b) {
@@ -68,6 +58,7 @@ void JordanExeptions(double ** &simplex, unsigned int r, unsigned int k, vector<
 	//change vars
 	swap(simplex[0][k], simplex[r][0]);;
 }
+
 
 // Метод создания симплекс-таблицы из исходных данных
 void create_simplex(double ** &simplex_matrix, vector<double> matrix_c, vector<double> matrix_b, vector<vector<double>> matrix_a) {
@@ -100,6 +91,7 @@ void create_simplex(double ** &simplex_matrix, vector<double> matrix_c, vector<d
 	}
 }
 
+
 bool checking_b(double ** simplex_matrix, vector<double> matrix_b) {
 	for (unsigned i = 1; i <= matrix_b.size(); ++i) {
 		if (simplex_matrix[i][1] < 0) {
@@ -108,6 +100,7 @@ bool checking_b(double ** simplex_matrix, vector<double> matrix_b) {
 	}
 	return false;
 }
+
 
 bool first_stage(double ** &simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
 	while (checking_b(simplex_matrix, matrix_b)) {
@@ -155,6 +148,7 @@ bool first_stage(double ** &simplex_matrix, vector<double> matrix_c, vector<doub
 	return true;
 }
 
+
 bool checking_F(double ** simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
 	for (unsigned i = 2; i <= matrix_c.size() + 1; ++i) {
 		if (simplex_matrix[matrix_b.size()+1][i] > 0) {
@@ -164,6 +158,7 @@ bool checking_F(double ** simplex_matrix, vector<double> matrix_c, vector<double
 	}
 	return false;
 }
+
 
 void second_stage(double ** &simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
 	while (checking_F(simplex_matrix, matrix_c, matrix_b)) {
@@ -192,6 +187,7 @@ void second_stage(double ** &simplex_matrix, vector<double> matrix_c, vector<dou
 	}
 }
 
+
 bool simplex_method_PZ(double ** &simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
 	while (checking_b(simplex_matrix, matrix_b) || checking_F(simplex_matrix, matrix_c, matrix_b)) {
 		if (first_stage(simplex_matrix, matrix_c, matrix_b)) {
@@ -201,6 +197,7 @@ bool simplex_method_PZ(double ** &simplex_matrix, vector<double> matrix_c, vecto
 	}
 	return true;
 }
+
 
 bool checking_integer_b(double ** simplex_matrix, vector<double> matrix_b) {
 	for (unsigned i = 1; i <= matrix_b.size(); ++i) {
@@ -295,7 +292,6 @@ void integer_solution(double ** &simplex_matrix, vector<double> &matrix_c, vecto
 		}
 	}
 }
-
 
 
 int main()
