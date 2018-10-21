@@ -9,7 +9,6 @@
 using namespace std;
 
 
-
 // Метод для вывода симплекс-таблицы
 void print(double ** simplex, vector<double> matrix_c, vector<double> matrix_b) {
 	std::cout << setw(11) << " " << "      ";
