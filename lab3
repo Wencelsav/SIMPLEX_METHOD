@@ -209,7 +209,7 @@ bool checking_integer_b(double ** simplex_matrix, vector<double> matrix_b) {
 
 double new_fic_var(double ** simplex_matrix, vector<double> matrix_c, vector<double> matrix_b) {
 	vector<double>  vars;
-	for (unsigned j = 2; j <= matrix_c.size() + 1; ++j) {
+	for (unsigned int j = 2; j <= matrix_c.size() + 1; ++j) {
 		vars.push_back(simplex_matrix[0][j]);
 	}
 	for (unsigned int i = 1; i <= matrix_b.size(); ++i) {
