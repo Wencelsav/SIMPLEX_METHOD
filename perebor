@@ -1,0 +1,21 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int count = 0;
+    vector<int> solutions;
+    for(unsigned i = 0; i <= 16; ++i) {
+        for(unsigned j = 0; j <= 16; ++j) {
+            for(unsigned k = 0; k <= 16; ++k){
+                if(((2*i + 5*j + 3*k) <= 16) && ((2*i + 1*j + 2*k <=6)) && (1*i + 2*j + 0*k <=6) && (0*i + 0.5*j + 1*k <=2)) {
+                    cout << "(" << i << "," << j << "," << k << ")" << ":" << (2*i + 5*j + 3*k) << endl;
+                    solutions.push_back(2*i + 5*j + 3*k);
+                    count++;
+                }
+            }
+        }
+    }
+    cout << "there are " << count << " solutions" << endl;
+    return 0;
+}
