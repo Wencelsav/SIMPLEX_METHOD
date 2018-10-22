@@ -159,14 +159,14 @@ void second_stage(double ** &simplex_matrix, vector<double> matrix_c, vector<dou
 				double min = 0;
 				int min_j = 0;
 				for (unsigned j = 1; j <= matrix_b.size(); ++j) {
-					if (simplex_matrix[j][i] != 0 && simplex_matrix[j][1] / simplex_matrix[j][i] > 0) {
+					if (simplex_matrix[j][i] > 0 && simplex_matrix[j][1] / simplex_matrix[j][i] >= 0) {
 						min = simplex_matrix[j][1] / simplex_matrix[j][i];
 						min_j = j;
 						break;
 					}
 				}
 				for (unsigned j = 1; j <= matrix_b.size(); ++j) {
-					if (simplex_matrix[j][i] != 0 && simplex_matrix[j][1] / simplex_matrix[j][i] > 0 && simplex_matrix[j][1] / simplex_matrix[j][i] < min) {
+					if (simplex_matrix[j][i] > 0 && simplex_matrix[j][1] / simplex_matrix[j][i] >= 0 && simplex_matrix[j][1] / simplex_matrix[j][i] < min) {
 						min = simplex_matrix[j][1] / simplex_matrix[j][i];
 						min_j = j;
 					}
